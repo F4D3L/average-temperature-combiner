@@ -5,8 +5,9 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
 
 /**
- * Fase de Reduce: recebe {@code ("temperatura", [(t1, 1), (t2, 1), ...])} depois do sort/shuffle e
- * emite {@code ("temperatura", média)}.
+ * Fase de Reduce: recebe {@code ("temperatura", [(s1, n1), (s2, n2), ...])} depois do sort/shuffle,
+ * com uma soma parcial por Map vinda do {@link TemperatureCombiner}, e emite
+ * {@code ("temperatura", média)}.
  *
  * <p>Chave/valor de entrada: {@link Text} / {@link SumCountWritable}. Chave/valor de saída:
  * {@link Text} / {@link DoubleWritable}.
@@ -23,7 +24,7 @@ public class TemperatureReducer extends Reducer<Text, SumCountWritable, Text, Do
             throws IOException, InterruptedException {
         double sum = 0;
         long count = 0;
-        // Soma a quantidade de cada valor em vez de 1, então somas parciais também funcionam (por exemplo, vindas de um Combiner).
+        // Soma a quantidade de cada valor em vez de 1, porque cada valor já é uma soma parcial do Combiner.
         for (SumCountWritable value : values) {
             sum += value.getSum();
             count += value.getCount();

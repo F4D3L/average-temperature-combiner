@@ -11,12 +11,13 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
  * {@code forestfireinput.csv}.
  *
  * <pre>
- * Map:     linha                     -> ("temperatura", (temp, 1))
- * Shuffle: agrupa pela chave         -> ("temperatura", [(t1, 1), (t2, 1), ...])
- * Reduce:  soma(temp) / soma(quant.) -> ("temperatura", média)
+ * Map:      linha                       -> ("temperatura", (temp, 1))
+ * Combiner: soma a saída de cada Map    -> ("temperatura", (soma parcial, quantidade parcial))
+ * Shuffle:  agrupa pela chave           -> ("temperatura", [(s1, n1), (s2, n2), ...])
+ * Reduce:   soma(somas) / soma(quant.)  -> ("temperatura", média)
  * </pre>
  *
- * <p>Uso: {@code hadoop jar average-temperature-1.0.0.jar <entrada> <diretório de saída>}. O
+ * <p>Uso: {@code hadoop jar average-temperature-combiner-1.0.0.jar <entrada> <diretório de saída>}. O
  * diretório de saída ainda não pode existir; o Hadoop se recusa a sobrescrevê-lo.
  */
 public class AverageTemperature {
@@ -33,6 +34,8 @@ public class AverageTemperature {
         job.setJarByClass(AverageTemperature.class);
 
         job.setMapperClass(TemperatureMapper.class);
+        // Otimização da Aula 06: agrega a saída de cada Map antes de enviá-la ao Reducer.
+        job.setCombinerClass(TemperatureCombiner.class);
         job.setReducerClass(TemperatureReducer.class);
 
         // Os tipos de saída do Map são diferentes dos tipos da saída final, então os dois pares são declarados.

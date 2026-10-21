@@ -5,12 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>br.pucpr.bigdata</groupId>
-    <artifactId>average-temperature</artifactId>
+    <artifactId>average-temperature-combiner</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Temperatura Média (MapReduce)</name>
-    <description>Temperatura média do forestfireinput.csv calculada com Hadoop MapReduce.</description>
+    <name>Temperatura Média com Combiner (MapReduce)</name>
+    <description>Temperatura média do forestfireinput.csv calculada com Hadoop MapReduce, otimizada com Combiner.</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -47,7 +47,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <!-- Permite rodar o job com: hadoop jar average-temperature-1.0.0.jar <entrada> <saída> -->
+                            <!-- Permite rodar o job com: hadoop jar average-temperature-combiner-1.0.0.jar <entrada> <saída> -->
                             <mainClass>AverageTemperature</mainClass>
                         </manifest>
                     </archive>
